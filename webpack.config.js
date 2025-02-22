@@ -32,14 +32,25 @@ export default {
   module: {
     rules: [
       {
-        test: /\.(ts|tsx)$/,  // TypeScriptファイルを処理
-        use: {
-          loader: 'ts-loader',
-          options: {
-            transpileOnly: true,  // 型チェックをスキップ
-          },
-        },
+        test: /\.(ts|tsx)$/,  // TypeScript を ts-loader → Babel の順で処理
         exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true,  // 型チェックをスキップ（後でtsc --noEmitでチェック）
+            },
+          },
+          {
+            loader: "babel-loader", // Babel で最新の JavaScript を最適化。React（JSX）変換は babel-loader で行う
+            options: {
+              presets: [
+                '@babel/preset-env',
+                '@babel/preset-react',
+              ],
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,
@@ -48,23 +59,6 @@ export default {
           "css-loader", 
         ],
       },
-      {
-        //test: /\.(js|jsx|ts|tsx)$/, // どの拡張子にBabel-loaderを適用させるか
-        test: /\.(js|jsx)$/, // Babel は JavaScript のみ処理
-        exclude: /node_modules/, // 除外するファイルやディレクトリ
-        use: [
-          {
-            loader: "babel-loader",
-            options: {
-              presets: [
-                '@babel/preset-env',  // 最新のJavaScriptを変換
-                '@babel/preset-react',  // JSXを変換
-                '@babel/preset-typescript',
-              ],
-            },
-          },
-        ],
-      }
     ]
   },
   plugins: [
