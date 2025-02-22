@@ -22,31 +22,36 @@ const PORT = 9000;
 const __dirname = path.resolve();
 
 // 静的ファイルの提供
-app.use(express.static(path.join(__dirname, 'dist'), {
+app.use('/React.js-kiso-4-v3', express.static(path.join(__dirname, 'dist'), {
   setHeaders: (res, path) => {
     if (path.endsWith('.js')) {
       res.set('Content-Type', 'application/javascript');
+    } else if (path.endsWith('.css')) {
+      res.set('Content-Type', 'text/css');
+    } else if (path.endsWith('.svg')) {
+      res.set('Content-Type', 'image/svg+xml');
     }
   }
 }));
 
 app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   // ReactコンポーネントをSSRでレンダリング
-  const html = ReactDOMServer.renderToString(React.createElement(App));  // JSXとして渡す
+  // const html = ReactDOMServer.renderToString(React.createElement(App));  // JSXとして渡す
 
-  // index.htmlの読み込み
-  const indexFile = path.join(__dirname, 'dist', 'index.html');
+  // // index.htmlの読み込み
+  // const indexFile = path.join(__dirname, 'dist', 'index.html');
 
-  // index.htmlにSSRされたコンテンツを埋め込む
-  fs.readFile(indexFile, 'utf8', (err, data) => {
-    if (err) {
-      res.status(500).send('Something went wrong');
-      return;
-    }
+  // // index.htmlにSSRされたコンテンツを埋め込む
+  // fs.readFile(indexFile, 'utf8', (err, data) => {
+  //   if (err) {
+  //     res.status(500).send('Something went wrong');
+  //     return;
+  //   }
 
-    const result = data.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
-    res.send(result);
-  });
+  //   const result = data.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
+  //   res.send(result);
+  // });
 });
 
 app.listen(PORT, () => {

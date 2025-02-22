@@ -46,7 +46,8 @@ export default {
             options: {
               presets: [
                 '@babel/preset-env',
-                '@babel/preset-react',
+                ['@babel/preset-react', { runtime: 'automatic' }],  // react-jsxではなくreactを使用している可能性があるので、明示的に指定する。
+                //'@babel/preset-react',
               ],
             },
           },
