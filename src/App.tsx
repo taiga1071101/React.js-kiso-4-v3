@@ -1,11 +1,12 @@
 import './App.css';
-import SelfIntroduction from './SelfIntroduction';
+//import { Router } from './routes/Router.tsx';
 //import React from 'react';
 
 function App() {
 
   return (
-    <SelfIntroduction />
+    //<Router url={window.location.pathname}/>
+    <p>a</p>
   )
 }
 

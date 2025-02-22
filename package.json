@@ -14,7 +14,8 @@
     "express": "^4.21.2",
     "gh-pages": "^6.3.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-router": "^7.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.9",

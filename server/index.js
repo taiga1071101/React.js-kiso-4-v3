@@ -3,7 +3,8 @@ import path from 'path';
 import fs from 'fs';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { App } from '../src/App.tsx';
+//import { App } from '../src/App.tsx';
+import { Router } from '../src/routes/Router.tsx';
 import '../src/App.css';
 import '../src/index.css';
 const app = express();  // webサーバーのインスタンス
@@ -34,24 +35,52 @@ app.use('/React.js-kiso-4-v3', express.static(path.join(__dirname, 'dist'), {
   }
 }));
 
+app.use((req, res, next) => {
+  console.log(`Request to: ${req.url}`);
+  next();
+});
+
+// favicon.icoのリクエストを無視する
+app.get('/favicon.ico', (_req, res) => {
+  res.status(204).end(); // 204 No Content 応答でアイコンのリクエストを無視
+});
+
 app.get('*', (_req, res) => {
   //res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  //console.log(html);
+  console.log(_req.url);
   // ReactコンポーネントをSSRでレンダリング
-  const html = ReactDOMServer.renderToString(React.createElement(App));  // JSXとして渡す
+  const html = ReactDOMServer.renderToString(React.createElement(Router, { url: _req.url }));  // JSXとして渡す
+  console.log(html);
+  console.log(_req.url);
 
-  // index.htmlの読み込み
-  const indexFile = path.join(__dirname, 'dist', 'index.html');
+  // // index.htmlの読み込み
+  // const indexFile = path.join(__dirname, 'dist', 'index.html');
 
   // index.htmlにSSRされたコンテンツを埋め込む
-  fs.readFile(indexFile, 'utf8', (err, data) => {
-    if (err) {
-      res.status(500).send('Something went wrong');
-      return;
-    }
+  // fs.readFile(indexFile, 'utf8', (err, data) => {
+  //   if (err) {
+  //     res.status(500).send('Something went wrong');
+  //     return;
+  //   }
 
-    const result = data.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
-    res.send(result);
-  });
+  //   const result = data.replace('<div id="root"></div>', `<div id="root">${html}</div>`);
+  //   res.send(result);
+  // });
+  const result = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>My SSR App</title>
+        <link rel="stylesheet" href="/React.js-kiso-4-v3/styles.css">
+      </head>
+      <body>
+        <div id="root">${html}</div>
+        <script src="/React.js-kiso-4-v3/bundle.js"></script>
+      </body>
+    </html>
+  `;
+  res.send(result);
 });
 
 app.listen(PORT, () => {

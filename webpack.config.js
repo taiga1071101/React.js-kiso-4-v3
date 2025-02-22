@@ -35,19 +35,19 @@ export default {
         test: /\.(ts|tsx)$/,  // TypeScript を ts-loader → Babel の順で処理
         exclude: /node_modules/,
         use: [
-          {
-            loader: 'ts-loader',
-            options: {
-              transpileOnly: true,  // 型チェックをスキップ（後でtsc --noEmitでチェック）
-            },
-          },
+          // {
+          //   loader: 'ts-loader',
+          //   options: {
+          //     transpileOnly: true,  // 型チェックをスキップ（後でtsc --noEmitでチェック）
+          //   },
+          // },
           {
             loader: "babel-loader", // Babel で最新の JavaScript を最適化。React（JSX）変換は babel-loader で行う
             options: {
               presets: [
                 '@babel/preset-env',
                 ['@babel/preset-react', { runtime: 'automatic' }],  // react-jsxではなくreactを使用している可能性があるので、明示的に指定する。
-                //'@babel/preset-react',
+                '@babel/preset-typescript',
               ],
             },
           },
