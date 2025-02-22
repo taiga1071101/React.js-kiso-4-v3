@@ -1,6 +1,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import webpackNodeExternals from 'webpack-node-externals';
+import MiniCssExtractPlugin  from 'mini-css-extract-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,7 +32,25 @@ export default {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|ts|tsx)$/, // どの拡張子にBabel-loaderを適用させるか
+        test: /\.(ts|tsx)$/,  // TypeScriptファイルを処理
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,  // 型チェックをスキップ
+          },
+        },
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader, // CSS を別ファイルに出力
+          "css-loader", 
+        ],
+      },
+      {
+        //test: /\.(js|jsx|ts|tsx)$/, // どの拡張子にBabel-loaderを適用させるか
+        test: /\.(js|jsx)$/, // Babel は JavaScript のみ処理
         exclude: /node_modules/, // 除外するファイルやディレクトリ
         use: [
           {
@@ -48,6 +67,11 @@ export default {
       }
     ]
   },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "styles.css", // 出力される CSS ファイル名
+    }),
+  ],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json'],
     fallback: {
