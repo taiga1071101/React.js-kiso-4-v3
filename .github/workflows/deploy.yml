@@ -1,5 +1,6 @@
 name: Deploy to GitHub Pages
 
+# masterブランチにプッシュしたときに自動でActionsが実行される
 on:
   push:
     branches:
